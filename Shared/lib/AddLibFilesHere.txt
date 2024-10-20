@@ -1,0 +1,8 @@
+Add the dlls needed from your local install of C:\SteamLibrary\steamapps\common\Supermarket Simulator\Supermarket Simulator_Data\Managed.
+
+They are:
+Assembly-CSharp.dll
+MyBox.dll
+ParadoxNotion.dll
+UnityEngine.dll
+UnityEngine.CoreModule.dll
