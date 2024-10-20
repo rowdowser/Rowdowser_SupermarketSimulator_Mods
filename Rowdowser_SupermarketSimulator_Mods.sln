@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rowdowser_CustomersChangeCh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{72DBB673-A2C7-4580-B955-969594B66529}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rowdowser_NoOverwriteLabel", "Rowdowser_NoOverwriteLabel\Rowdowser_NoOverwriteLabel.csproj", "{D262767F-0F4B-4A2F-AC3B-F125EEA86436}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{72DBB673-A2C7-4580-B955-969594B66529}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72DBB673-A2C7-4580-B955-969594B66529}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72DBB673-A2C7-4580-B955-969594B66529}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D262767F-0F4B-4A2F-AC3B-F125EEA86436}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D262767F-0F4B-4A2F-AC3B-F125EEA86436}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D262767F-0F4B-4A2F-AC3B-F125EEA86436}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D262767F-0F4B-4A2F-AC3B-F125EEA86436}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
