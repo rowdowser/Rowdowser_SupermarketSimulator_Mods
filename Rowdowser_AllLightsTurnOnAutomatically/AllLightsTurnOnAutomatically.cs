@@ -16,8 +16,8 @@ namespace SupermarketSimulator
         private ConfigEntry<string> configTimeChangeStore;
         private ConfigEntry<string> configTimeChangeStorage;
         private static ConfigEntry<bool> configEnableDebugging;
-        private static DateTime? timeChangeStore = null;
-        private static DateTime? timeChangeStorage = null;
+        private static UpdateTime updateTimeStore;
+        private static UpdateTime updateTimeStorage;
 
         private void Awake()
         {
@@ -31,27 +31,30 @@ namespace SupermarketSimulator
             configTimeChangeStorage = Config.Bind("Features", "TimeChange_Storage", "18:00",
                 "The time to turn on the storage lights. Should be in the format hh:mm such as '18:00'.");
 
-            if (!DateTime.TryParse(configTimeChangeStore.Value, out DateTime timeChange1))
+            if (!DateTime.TryParse(configTimeChangeStore.Value, out DateTime timeChangeStore))
             {
                 logger.LogWarning($"Invalid configuration value for {configTimeChangeStore.Definition.Key}: {configTimeChangeStore.Value}");
             }
             else
             {
-                timeChangeStore = timeChange1;
+                updateTimeStore = new UpdateTime(timeChangeStore);
+                LogIfDebuggingIsOn(logger, configEnableDebugging.Value, $"Store light set for values {updateTimeStore.GetDescription()}");
             }
-            if (!DateTime.TryParse(configTimeChangeStorage.Value, out DateTime timeChange2))
+
+            if (!DateTime.TryParse(configTimeChangeStorage.Value, out DateTime timeChangeStorage))
             {
                 logger.LogWarning($"Invalid configuration value for {configTimeChangeStorage.Definition.Key}: {configTimeChangeStorage.Value}");
             }
             else
             {
-                timeChangeStorage = timeChange2;
+                updateTimeStorage = new UpdateTime(timeChangeStorage);
+                LogIfDebuggingIsOn(logger, configEnableDebugging.Value, $"Storage light set for for values {updateTimeStorage.GetDescription()}");
             }
 
             LogIfDebuggingIsOn(logger, configEnableDebugging.Value, $"Configuration value for {configTimeChangeStore.Definition.Key}: {configTimeChangeStore.Value}");
             LogIfDebuggingIsOn(logger, configEnableDebugging.Value, $"Configuration value for {configTimeChangeStorage.Definition.Key}: {configTimeChangeStorage.Value}");
 
-            if (timeChangeStore != null || timeChangeStorage != null)
+            if (updateTimeStore != null || updateTimeStorage != null)
             {
                 harmony.PatchAll();
             }
@@ -79,23 +82,23 @@ namespace SupermarketSimulator
             [HarmonyPatch(methodName: nameof(DayCycleManager.UpdateGameTime))]
             public static void PostFix_UpdateGameTime(DayCycleManager __instance)
             {
-                if (__instance.m_CurrentTimeInHours == timeChangeStore?.Hour && __instance.m_CurrentTimeInMinutes == timeChangeStore?.Minute)
+                if (updateTimeStore?.DoesTimeMatch(__instance) ?? false)
                 {
                     bool turnOn_Store = Singleton<StoreLightManager>.Instance.TurnOn;
                     if (!turnOn_Store)
                     {
-                        LogIfDebuggingIsOn(logger, configEnableDebugging.Value, "Store light automatically turned on");
+                        LogIfDebuggingIsOn(logger, configEnableDebugging.Value, $"Store light automatically turned on for values {updateTimeStore.GetDescription()}");
                         Singleton<StoreLightManager>.Instance.TurnOn = true;
                         Singleton<SFXManager>.Instance.PlaySwitchSFX(turnOn_Store);
                     }
                 }
 
-                if (__instance.m_CurrentTimeInHours == timeChangeStorage?.Hour && __instance.m_CurrentTimeInMinutes == timeChangeStorage?.Minute)
+                if (updateTimeStorage?.DoesTimeMatch(__instance) ?? false)
                 {
                     bool turnOn_Storage = Singleton<StorageLightManager>.Instance.TurnOn;
                     if (!turnOn_Storage)
                     {
-                        LogIfDebuggingIsOn(logger, configEnableDebugging.Value, "Storage light automatically turned on");
+                        LogIfDebuggingIsOn(logger, configEnableDebugging.Value, $"Storage light automatically turned on for values {updateTimeStorage.GetDescription()}");
                         Singleton<StorageLightManager>.Instance.TurnOn = true;
                         Singleton<SFXManager>.Instance.PlaySwitchSFX(turnOn_Storage);
                     }
